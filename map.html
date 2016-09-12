@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <style type="text/css">
+      html, body { height: 100%; margin: 0; padding: 0; }
+      #map { height: 80%; width: 50%; }
+  </style>
+  </head>
+  <body> 
+    <div id="map">
+     
+    </div>
+    <div style="margin: 10px;">
+            <button class="btn btn-success" id = "btnFind" onclick="find()">Find Me!</button>
+    </div>
+    
+    <script type="text/javascript">
+    var map;
+    var marker;
+    var currentPosition;
+    var infoWindow;
+
+    function find(){
+      infoWindow = new google.maps.InfoWindow({map: map});
+
+       if(navigator.geolocation){
+          navigator.geolocation.getCurrentPosition(function(position){
+            currentPosition = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            marker = new google.maps.Marker({
+              position: currentPosition,
+              map: this.map,
+              title: "Your current location is this! I catch you! :D"
+
+            });
+
+            //infoWindow.setPosition(currentPosition);
+            //infoWindow.setContent("Your current location is this! I catch you! :D");  
+            map.setCenter(currentPosition);
+            map.setZoom(16);
+          }, function(){
+            currentPosition = {
+              lat: 14.0818,
+              lng: -87.20681 
+            };
+
+            infoWindow.setPosition(currentPosition);
+            infoWindow.setContent("Sorry, I can't find you :(");           
+            map.setCenter(currentPosition);
+            map.setZoom(8);
+
+
+            //handleLocationError(true, infoWindow, map.getCenter());
+            
+            } 
+          );
+       }else{
+          //handleLocationError(false, infoWindow, map.getCenter());
+          currentPosition = {
+              lat: 14.0818,
+              lng: -87.20681 
+            };
+
+            infoWindow.setPosition(currentPosition);
+            infoWindow.setContent("We can't play if you don't turn on your localization. Sorry:(");
+            map.setCenter(currentPosition);
+            map.setZoom(8);
+       }
+    }
+
+    function initMap() {
+       map = new google.maps.Map(document.getElementById('map'), {center: {lat: 14.0818, lng: -87.20681},zoom: 8});
+
+       map.addListener('click',function(event){
+          
+          alert("click");
+          
+          newMarker = new google.maps.Marker({
+            position : { lat : event.latLng.lat(),
+                          lng : event.latLng.lng()},
+            map : map,
+            title : "Nueva ubicacion"
+          });
+
+          map.setCenter(newMarker.getPosition());
+          map.setZoom(14);
+          //map.setCenter(marker.getPosition());
+       });
+    }     
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?callback=initMap&signed_in=true&key=AIzaSyDfqQRALNIzG2-x4Kj_W1TsF_r3oNuK93I">
+    </script>
+  </body>
+</html>
